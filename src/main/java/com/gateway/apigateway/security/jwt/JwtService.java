@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
@@ -14,6 +15,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
+@Service
 public class JwtService {
 
     private static final String SECRET_KEY = "6D5971337436763979244226452948404D635166546A576E5A7234753778217A25432A462D4A614E645267556B58703273357638792F423F4428472B4B625065";
@@ -70,7 +72,7 @@ public class JwtService {
                 .setClaims(extraClaims)
                 .claim(CLAIM_ROLE, user.getRole().name())
                 .claim(CLAIM_ID, user.getId())
-                .setSubject(String.format("%s, %s", user.getId(), user.getEmail()))
+                .setSubject(String.format("%s, %s", user.getId(), user.getUsername()))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_VALIDITY))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS512)
@@ -80,7 +82,7 @@ public class JwtService {
     public boolean isTokenValid(String token, User user) {
         final Long id = extractId(token);
         final String email = extractUsername(token);
-        return Objects.equals(id, user.getId()) && email.equals(user.getEmail()) && !isTokenExpired(token);
+        return Objects.equals(id, user.getId()) && email.equals(user.getUsername()) && !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(final String token) {
