@@ -2,17 +2,20 @@ package com.gateway.apigateway.controller;
 
 import com.gateway.apigateway.auth.AuthenticationRequest;
 import com.gateway.apigateway.auth.AuthenticationResponse;
+import com.gateway.apigateway.model.User;
 import com.gateway.apigateway.security.jwt.JwtService;
 import com.gateway.apigateway.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
 
@@ -21,6 +24,7 @@ public class AuthenticationController {
     private final JwtService jwtService;
 
     private final AuthenticationManager authenticationManager;
+    private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
@@ -37,10 +41,17 @@ public class AuthenticationController {
             return ResponseEntity.badRequest().build();
         }
     }
+    @PostMapping("/register")
+    public ResponseEntity register(@RequestBody User user){
+            try{
+                return ResponseEntity.status(HttpStatus.OK).body(authenticationService.register(user));
+            }catch (Exception e){
+                return ResponseEntity.status(HttpStatus.OK).body("Register user failed.");
+            }
+    }
 
     @GetMapping("/")
     public ResponseEntity<String> helloWorld() {
-
-        return ResponseEntity.ok(new BCryptPasswordEncoder().encode("123.Auth"));
+        return ResponseEntity.ok(passwordEncoder.encode("123.Auth"));
     }
 }

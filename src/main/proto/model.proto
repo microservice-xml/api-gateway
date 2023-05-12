@@ -2,6 +2,7 @@ syntax = "proto3";
 
 option java_multiple_files = true;
 package communication;
+import "google/protobuf/timestamp.proto";
 
 enum Role {
   GUEST = 0;
@@ -19,3 +20,20 @@ message UserDetailsResponse {
   Role role = 4;
   uint32 penalties = 5;
 }
+
+message RegisterUser {
+  string username = 1;
+  string location = 2;
+  string email = 3;
+  string firstName = 4;
+  string lastName = 5;
+  string phoneNumber = 6;
+  string password = 7;
+  uint32 penalties = 8;
+  Role role = 9;
+}
+
+message MessageResponse {
+  string message = 1;
+}
+
