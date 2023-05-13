@@ -2,8 +2,9 @@ package com.gateway.apigateway.service;
 
 import com.gateway.apigateway.dto.UserDetailsResponseDto;
 import com.gateway.apigateway.exception.UserNotFoundException;
+import com.gateway.apigateway.mapper.UserMapper;
 import com.gateway.apigateway.model.User;
-import communication.Role;
+import communication.*;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import lombok.RequiredArgsConstructor;
@@ -14,9 +15,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import communication.UserDetailsResponse;
-import communication.UserDetailsRequest;
-import communication.userDetailsServiceGrpc;
 
 @Service
 @RequiredArgsConstructor
@@ -29,8 +27,8 @@ public class AuthenticationService implements UserDetailsService {
     @Override
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
         try {
-            return getUserDetails(username);
-        } catch (Exception e) {
+          return getUserDetails(username);
+            } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -53,4 +51,18 @@ public class AuthenticationService implements UserDetailsService {
                 .penalties(response.getPenalties()).build();
         return user;
     }
+
+    public String register(User user) {
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 9093)
+                .usePlaintext()
+                .build();
+
+        userDetailsServiceGrpc.userDetailsServiceBlockingStub blockingStub = userDetailsServiceGrpc.newBlockingStub(channel);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        RegisterUser request = UserMapper.convertToRegistrationRequest(user);
+
+        MessageResponse response = blockingStub.register(request);
+        return response.getMessage();
+    }
+
 }
