@@ -19,12 +19,10 @@ import static org.springframework.http.HttpStatus.OK;
 public class UserController {
     @Autowired
     UserService userService;
-
     @GetMapping("/all")
     public ResponseEntity findAll() {
         return ResponseEntity.status(HttpStatus.OK).body(userService.findAll());
     }
-
     @PutMapping("/change-personal-info")
     public ResponseEntity<User> changeUserInfo(@RequestBody User user) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.changeUserInfo(user));

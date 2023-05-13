@@ -65,6 +65,7 @@ public class UserMapper {
                 .phoneNumber(communicationUser.getPhoneNumber())
                 .penalties(communicationUser.getPenalties())
                 .password(communicationUser.getPassword())
+                .role(convertToEntityRole(communicationUser.getRole()))
                 .build();
     }
 
@@ -72,17 +73,7 @@ public class UserMapper {
         List<User> userList = new ArrayList<>();
 
         for (communication.User communicationUser : communicationUserList.getUsersList()) {
-            User user = User.builder()
-                    .id(communicationUser.getId())
-                    .location(communicationUser.getLocation())
-                    .email(communicationUser.getEmail())
-                    .username(communicationUser.getUsername())
-                    .firstName(communicationUser.getFirstName())
-                    .lastName(communicationUser.getLastName())
-                    .phoneNumber(communicationUser.getPhoneNumber())
-                    .penalties(communicationUser.getPenalties())
-                    .password(communicationUser.getPassword())
-                    .build();
+            User user = convertUserGrpcToUser(communicationUser);
             userList.add(user);
         }
         return userList;
