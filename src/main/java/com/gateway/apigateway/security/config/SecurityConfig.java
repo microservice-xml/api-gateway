@@ -35,20 +35,12 @@ public class SecurityConfig {
                 .and()
                 .httpBasic()
                 .and()
-<<<<<<< HEAD
                 .authorizeHttpRequests(
                         (authz) -> authz
                                 .requestMatchers("/api/auth/**", "/error", "/error/**").permitAll()
                                 .anyRequest()
                                 .authenticated()
                 )
-=======
-                .authorizeHttpRequests()
-                .requestMatchers("/api/auth/**").permitAll()
-                .anyRequest()
-                .authenticated()
-                .and()
->>>>>>> develop
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
