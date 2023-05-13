@@ -47,7 +47,7 @@ public class JwtService {
     }
 
     public String extractUsername(final String token) {
-        return extractClaim(token, Claims::getSubject);
+        return extractClaim(token, Claims::getSubject).replace("\n", "");
     }
 
     public Long extractId(final String token) {
@@ -55,7 +55,7 @@ public class JwtService {
                         .setSigningKey(SECRET_KEY)
                         .parseClaimsJws(token)
                         .getBody();
-        return (Long) claims.get("id");
+        return Long.valueOf(((Integer) claims.get("id")).longValue());
     }
 
     public Date extractExpiration(final String token) {
@@ -72,7 +72,7 @@ public class JwtService {
                 .setClaims(extraClaims)
                 .claim(CLAIM_ROLE, user.getRole().name())
                 .claim(CLAIM_ID, user.getId())
-                .setSubject(String.format("%s, %s", user.getId(), user.getUsername()))
+                .setSubject(String.format("%s", user.getUsername()))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_VALIDITY))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS512)
