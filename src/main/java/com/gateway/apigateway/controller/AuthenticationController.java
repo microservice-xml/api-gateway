@@ -2,6 +2,7 @@ package com.gateway.apigateway.controller;
 
 import com.gateway.apigateway.auth.AuthenticationRequest;
 import com.gateway.apigateway.auth.AuthenticationResponse;
+import com.gateway.apigateway.auth.RegistrationRequest;
 import com.gateway.apigateway.security.jwt.JwtService;
 import com.gateway.apigateway.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,6 @@ public class AuthenticationController {
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
-        try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
             var user = authenticationService.loadUserByUsername(request.getUsername());
             var jwtToken = jwtService.generateToken(user);
@@ -32,10 +32,11 @@ public class AuthenticationController {
                     .token(jwtToken)
                     .build();
             return ResponseEntity.ok(authResponse);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.badRequest().build();
-        }
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@RequestBody RegistrationRequest request) {
+        return ResponseEntity.ok("Ok");
     }
 
     @GetMapping("/")
