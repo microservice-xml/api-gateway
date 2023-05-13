@@ -2,6 +2,7 @@ package com.gateway.apigateway.service;
 
 import com.gateway.apigateway.dto.UserDetailsResponseDto;
 import com.gateway.apigateway.exception.UserNotFoundException;
+import com.gateway.apigateway.mapper.UserMapper;
 import com.gateway.apigateway.model.User;
 import communication.*;
 import io.grpc.ManagedChannel;
@@ -57,17 +58,8 @@ public class AuthenticationService implements UserDetailsService {
                 .build();
 
         userDetailsServiceGrpc.userDetailsServiceBlockingStub blockingStub = userDetailsServiceGrpc.newBlockingStub(channel);
-        RegisterUser request = RegisterUser.newBuilder()
-                .setLocation(user.getLocation())
-                .setEmail(user.getEmail())
-                .setUsername(user.getUsername())
-                .setPassword(passwordEncoder.encode(user.getPassword()))
-                .setFirstName(user.getFirstName())
-                .setLastName(user.getLastName())
-                .setPhoneNumber(user.getPhoneNumber())
-                .setPenalties(user.getPenalties())
-                .setRole(user.getRole().equals(com.gateway.apigateway.model.Role.GUEST) ? Role.GUEST : Role.HOST)
-                .build();
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        RegisterUser request = UserMapper.convertToRegistrationRequest(user);
 
         MessageResponse response = blockingStub.register(request);
         return response.getMessage();

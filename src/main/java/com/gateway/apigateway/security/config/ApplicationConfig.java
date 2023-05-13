@@ -2,6 +2,7 @@ package com.gateway.apigateway.security.config;
 
 import com.gateway.apigateway.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -47,5 +48,10 @@ public class ApplicationConfig {
         provider.setUserDetailsService(new AuthenticationService(passwordEncoder()));
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
+    }
+
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
     }
 }
