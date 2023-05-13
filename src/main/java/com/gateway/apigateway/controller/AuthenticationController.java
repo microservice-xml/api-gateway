@@ -16,7 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
 
@@ -43,12 +43,8 @@ public class AuthenticationController {
             try{
                 return ResponseEntity.status(HttpStatus.OK).body(authenticationService.register(user));
             }catch (Exception e){
-                return ResponseEntity.status(HttpStatus.OK).body("Register user failed.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Register user failed.");
             }
     }
 
-    @GetMapping("/")
-    public ResponseEntity<String> helloWorld() {
-        return ResponseEntity.ok(passwordEncoder.encode("123.Auth"));
-    }
 }
