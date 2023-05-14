@@ -24,7 +24,7 @@ public class UserService {
                 .usePlaintext()
                 .build();
         userDetailsServiceGrpc.userDetailsServiceBlockingStub blockingStub = userDetailsServiceGrpc.newBlockingStub(channel);
-        if(!user.getPassword().isEmpty()) {
+        if(user.getPassword()!=null) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
         communication.User u = convertUserToUserGrpc(user);
