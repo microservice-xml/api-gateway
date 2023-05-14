@@ -41,17 +41,34 @@ public class UserMapper {
     }
 
     public static communication.User convertUserToUserGrpc(User user) {
-        communication.User request = communication.User.newBuilder()
-                .setId(user.getId())
-                .setLocation(user.getLocation())
-                .setEmail(user.getEmail())
-                .setUsername(user.getUsername())
-                .setPassword(user.getPassword())
-                .setFirstName(user.getFirstName())
-                .setLastName(user.getLastName())
-                .setPhoneNumber(user.getPhoneNumber())
-                .setPenalties(user.getPenalties())
-                .build();
+        communication.User request;
+        if (user.getPassword() == null){
+            request = communication.User.newBuilder()
+                    .setId(user.getId())
+                    .setLocation(user.getLocation())
+                    .setEmail(user.getEmail())
+                    .setUsername(user.getUsername())
+                    .setFirstName(user.getFirstName())
+                    .setLastName(user.getLastName())
+                    .setPhoneNumber(user.getPhoneNumber())
+                    .setRole(convertToMessageRole(user.getRole()))
+                    .setPenalties(user.getPenalties())
+                    .build();
+        } else {
+            request = communication.User.newBuilder()
+                    .setId(user.getId())
+                    .setLocation(user.getLocation())
+                    .setEmail(user.getEmail())
+                    .setUsername(user.getUsername())
+                    .setFirstName(user.getFirstName())
+                    .setPassword(user.getPassword())
+                    .setLastName(user.getLastName())
+                    .setPhoneNumber(user.getPhoneNumber())
+                    .setRole(convertToMessageRole(user.getRole()))
+                    .setPenalties(user.getPenalties())
+                    .build();
+        }
+
         return request;
     }
 
