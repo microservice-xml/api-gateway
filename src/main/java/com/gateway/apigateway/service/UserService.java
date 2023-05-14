@@ -8,7 +8,6 @@ import communication.userDetailsServiceGrpc;
 
 import com.gateway.apigateway.dto.User.UserDto;
 import com.gateway.apigateway.mapper.UserMapper;
-import communication.*;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import lombok.RequiredArgsConstructor;
@@ -52,7 +51,7 @@ public class UserService {
                 .usePlaintext()
                 .build();
         userDetailsServiceGrpc.userDetailsServiceBlockingStub blockingStub = userDetailsServiceGrpc.newBlockingStub(channel);
-        MessageResponse message = blockingStub.delete(UserIdRequest.newBuilder().setId(id).build());
+        communication.MessageResponse message = blockingStub.delete(communication.UserIdRequest.newBuilder().setId(id).build());
         return message.getMessage();
     }
     public UserDto getById(Long id) {
@@ -61,7 +60,7 @@ public class UserService {
                 .build();
         userDetailsServiceGrpc.userDetailsServiceBlockingStub blockingStub = userDetailsServiceGrpc.newBlockingStub(channel);
 
-        RegisterUser user = blockingStub.getById(UserIdRequest.newBuilder().setId(id).build());
+        communication.RegisterUser user = blockingStub.getById(communication.UserIdRequest.newBuilder().setId(id).build());
 
         return UserMapper.convertFromMessageToUserDto(user);
     }

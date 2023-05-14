@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class UserController {
     @Autowired
     UserService userService;
     @GetMapping("/all")
+    @Secured({ "HOST" })
     public ResponseEntity findAll() {
         return ResponseEntity.status(HttpStatus.OK).body(userService.findAll());
     }
