@@ -5,7 +5,7 @@ package communication;
 import "google/protobuf/timestamp.proto";
 import "model.proto";
 
-service ReservationService {
+service UserCommunicationService {
   rpc createRequest(Reservation) returns (MessageResponse);
   rpc findById(Id) returns (Reservation);
   rpc findAll(EmptyMessage) returns (ListReservation);
