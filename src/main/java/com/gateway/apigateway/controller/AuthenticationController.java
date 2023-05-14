@@ -5,13 +5,12 @@ import com.gateway.apigateway.auth.AuthenticationResponse;
 import com.gateway.apigateway.model.User;
 import com.gateway.apigateway.security.jwt.JwtService;
 import com.gateway.apigateway.service.AuthenticationService;
-import communication.RegisterUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,4 +46,9 @@ public class AuthenticationController {
             }
     }
 
+    @GetMapping("/")
+    @Secured({ "HOST" })
+    public ResponseEntity<String> helloWorld() {
+        return ResponseEntity.ok(passwordEncoder.encode("123.Auth"));
+    }
 }
