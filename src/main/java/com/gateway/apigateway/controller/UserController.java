@@ -1,5 +1,6 @@
 package com.gateway.apigateway.controller;
 
+import com.gateway.apigateway.dto.User.UserDto;
 import com.gateway.apigateway.model.User;
 import com.gateway.apigateway.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -27,9 +28,14 @@ public class UserController {
     public ResponseEntity<User> changeUserInfo(@RequestBody User user) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.changeUserInfo(user));
     }
+    @GetMapping("/{id}")
+    public ResponseEntity<UserDto> getById(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(userService.getById(id));
+    }
+
     @DeleteMapping("/remove/{id}")
-    public void deleteUser(@PathVariable Long id){
-        userService.deleteUser(id);
+    public ResponseEntity<String> deleteUser(@PathVariable Long id){
+        return ResponseEntity.ok(userService.deleteUser(id));
     }
     /*
     @GetMapping("/user-details/{username}")

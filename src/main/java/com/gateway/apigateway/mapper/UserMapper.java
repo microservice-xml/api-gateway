@@ -1,6 +1,7 @@
 package com.gateway.apigateway.mapper;
 
 import com.gateway.apigateway.auth.RegistrationRequest;
+import com.gateway.apigateway.dto.User.UserDto;
 import com.gateway.apigateway.model.User;
 import communication.RegisterUser;
 import communication.Role;
@@ -77,5 +78,17 @@ public class UserMapper {
             userList.add(user);
         }
         return userList;
+    }
+    public static UserDto convertFromMessageToUserDto(RegisterUser user) {
+        return UserDto.builder()
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .phoneNumber(user.getPhoneNumber())
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .location(user.getLocation())
+                .role(convertToEntityRole(user.getRole()))
+                .username(user.getUsername())
+                .build();
     }
 }

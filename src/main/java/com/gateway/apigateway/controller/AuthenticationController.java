@@ -5,18 +5,17 @@ import com.gateway.apigateway.auth.AuthenticationResponse;
 import com.gateway.apigateway.model.User;
 import com.gateway.apigateway.security.jwt.JwtService;
 import com.gateway.apigateway.service.AuthenticationService;
-import communication.RegisterUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
 
@@ -43,11 +42,12 @@ public class AuthenticationController {
             try{
                 return ResponseEntity.status(HttpStatus.OK).body(authenticationService.register(user));
             }catch (Exception e){
-                return ResponseEntity.status(HttpStatus.OK).body("Register user failed.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Register user failed.");
             }
     }
 
     @GetMapping("/")
+    @Secured({ "HOST" })
     public ResponseEntity<String> helloWorld() {
         return ResponseEntity.ok(passwordEncoder.encode("123.Auth"));
     }

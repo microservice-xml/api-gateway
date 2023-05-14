@@ -56,3 +56,7 @@ message MessageResponse {
   string message = 1;
 }
 
+message UserIdRequest {
+  uint64 id = 1;
+}
+
