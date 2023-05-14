@@ -36,7 +36,7 @@ public class SecurityConfig {
                 .httpBasic()
                 .and()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/**").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
