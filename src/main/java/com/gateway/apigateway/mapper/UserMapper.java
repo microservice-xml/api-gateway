@@ -96,7 +96,6 @@ public class UserMapper {
         }
         return userList;
     }
-
     public static UserDto convertFromMessageToUserDto(RegisterUser user) {
         return UserDto.builder()
                 .firstName(user.getFirstName())
