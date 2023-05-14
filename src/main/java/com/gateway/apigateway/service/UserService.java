@@ -41,4 +41,11 @@ public class UserService {
 
         return convertUsersGrpcToUsers(finaListUsers);
     }
+
+    public void deleteUser(Long id) {
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 9093)
+                .usePlaintext()
+                .build();
+        userDetailsServiceGrpc.userDetailsServiceBlockingStub blockingStub = userDetailsServiceGrpc.newBlockingStub(channel);
+    }
 }

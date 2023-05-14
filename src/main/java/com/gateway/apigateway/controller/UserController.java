@@ -26,12 +26,12 @@ public class UserController {
     @PutMapping("/change-personal-info")
     public ResponseEntity<User> changeUserInfo(@RequestBody User user) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.changeUserInfo(user));
-    } /*
+    }
     @DeleteMapping("/remove/{id}")
     public void deleteUser(@PathVariable Long id){
         userService.deleteUser(id);
     }
-
+    /*
     @GetMapping("/user-details/{username}")
     public ResponseEntity<UserDetailsResponseDto> getUserDetails(@PathVariable("username") String username) {
         User user = userService.loadUserByUsername(username);
