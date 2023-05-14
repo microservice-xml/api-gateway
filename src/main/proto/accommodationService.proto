@@ -7,6 +7,8 @@ import "model.proto";
 
 service AccommodationService {
   rpc findAllByUser(UserId) returns (ListAccommodation);
+
+  rpc addAccommodation(AccommodationFull) returns (MessageResponse);
 }
 
 message UserId {
