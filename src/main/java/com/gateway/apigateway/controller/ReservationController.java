@@ -41,10 +41,27 @@ public class ReservationController {
     @GetMapping("/status/{status}")
     public ResponseEntity findAllByStatus(@PathVariable ReservationStatus status) {
         List<Reservation> reservations = reservationService.findAllByStatus(status);
-        if(reservations.isEmpty())
+        if (reservations.isEmpty())
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("List is empty.");
         else
-            return ResponseEntity.status(HttpStatus.OK).body(reservationService.findAllByStatus(status));
+            return ResponseEntity.status(HttpStatus.OK).body(reservations);
+    }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity findByUsedId(@PathVariable Long id) {
+        List<Reservation> reservations = reservationService.findAllByUserId(id);
+        if (reservations.isEmpty())
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("List is empty.");
+        else
+            return ResponseEntity.status(HttpStatus.OK).body(reservations);
+    }
+    @GetMapping("/accommodation/{id}")
+    public ResponseEntity findByAccomodationId(@PathVariable Long id) {
+        List<Reservation> reservations = reservationService.findByAccomodationId(id);
+        if (reservations.isEmpty())
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("List is empty.");
+        else
+            return ResponseEntity.status(HttpStatus.OK).body(reservations);
     }
 
     @PutMapping("/accept/{id}")

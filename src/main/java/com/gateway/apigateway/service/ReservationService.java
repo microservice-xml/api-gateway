@@ -78,4 +78,24 @@ public class ReservationService {
         }
         return retVal;
     }
+
+    public List<Reservation> findAllByUserId(Long id) {
+        ReservationServiceGrpc.ReservationServiceBlockingStub blockingStub = getStub();
+        ListReservation reservations = blockingStub.findAllByUserId(LongId.newBuilder().setId(id).build());
+        List<Reservation> retVal = new ArrayList<>();
+        for(communication.Reservation res : reservations.getReservationsList()){
+            retVal.add(convertReservationGrpcToReservation(res));
+        }
+        return retVal;
+    }
+
+    public List<Reservation> findByAccomodationId(Long id) {
+        ReservationServiceGrpc.ReservationServiceBlockingStub blockingStub = getStub();
+        ListReservation reservations = blockingStub.findByAccomodationId(LongId.newBuilder().setId(id).build());
+        List<Reservation> retVal = new ArrayList<>();
+        for(communication.Reservation res : reservations.getReservationsList()){
+            retVal.add(convertReservationGrpcToReservation(res));
+        }
+        return retVal;
+    }
 }
