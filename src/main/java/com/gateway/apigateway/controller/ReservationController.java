@@ -1,6 +1,7 @@
 package com.gateway.apigateway.controller;
 
 
+import com.gateway.apigateway.dto.ReservationDto;
 import com.gateway.apigateway.model.Reservation;
 import com.gateway.apigateway.model.ReservationStatus;
 import com.gateway.apigateway.service.ReservationService;
@@ -18,9 +19,9 @@ public class ReservationController {
     private final ReservationService reservationService;
 
     @PostMapping
-    public ResponseEntity createRequest(@RequestBody Reservation reservation) {
+    public ResponseEntity createRequest(@RequestBody ReservationDto reservationDto) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(reservationService.create(reservation));
+            return ResponseEntity.status(HttpStatus.CREATED).body(reservationService.create(reservationDto));
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Please try again later...");
@@ -80,8 +81,8 @@ public class ReservationController {
     }
 
     @PostMapping("/auto")
-    public ResponseEntity acceptReservationAuto(@RequestBody Reservation reservation) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(reservationService.createAuto(reservation));
+    public ResponseEntity acceptReservationAuto(@RequestBody ReservationDto reservationDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(reservationService.createAuto(reservationDto));
     }
 
 

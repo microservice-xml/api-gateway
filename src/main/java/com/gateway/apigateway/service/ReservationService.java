@@ -1,5 +1,6 @@
 package com.gateway.apigateway.service;
 
+import com.gateway.apigateway.dto.ReservationDto;
 import com.gateway.apigateway.model.Reservation;
 import communication.*;
 import io.grpc.ManagedChannel;
@@ -7,6 +8,7 @@ import io.grpc.ManagedChannelBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +19,7 @@ import static com.gateway.apigateway.mapper.ReservationStatusMapper.convertReser
 @Service
 @RequiredArgsConstructor
 public class ReservationService {
+    private final AvailabilitySlotService availabilitySlotService;
     private ReservationServiceGrpc.ReservationServiceBlockingStub getStub() {
         ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 9095)
                 .usePlaintext()
@@ -24,10 +27,32 @@ public class ReservationService {
         return ReservationServiceGrpc.newBlockingStub(channel);
     }
 
-    public String create(Reservation reservation) {
+    public String create(ReservationDto reservationDto) {
         ReservationServiceGrpc.ReservationServiceBlockingStub blockingStub = getStub();
+
+        Reservation reservation = findAvailabilitySlotForReservation(reservationDto);
         MessageResponse response = blockingStub.createRequest(convertReservationToReservationGrpc(reservation));
         return response.getMessage();
+    }
+
+    private Reservation findAvailabilitySlotForReservation(ReservationDto reservationDto){
+        List<com.gateway.apigateway.model.AvailabilitySlot> accommodations = availabilitySlotService.getAllByAccommodationId(reservationDto.getAccId());
+        for(com.gateway.apigateway.model.AvailabilitySlot ac : accommodations){
+            if(isInRange(reservationDto.getStart(),reservationDto.getEnd(),ac.getStart(),ac.getEnd())){
+                return Reservation.builder()
+                        .slotId(ac.getId())
+                        .end(reservationDto.getEnd())
+                        .start(reservationDto.getStart())
+                        .numberOfGuests(reservationDto.getNog())
+                        .userId(reservationDto.getUserId())
+                        .build();
+            }
+        }
+        return null;
+    }
+
+    public boolean isInRange(LocalDate startDate1, LocalDate endDate1, LocalDate startDate2, LocalDate endDate2) {
+        return startDate1.compareTo(startDate2) >= 0 && endDate1.compareTo(endDate2) <= 0;
     }
 
     public Reservation findById(String id) {
@@ -35,8 +60,9 @@ public class ReservationService {
         return convertReservationGrpcToReservation(blockingStub.findById(Id.newBuilder().setId(id).build()));
     }
 
-    public String createAuto(Reservation reservation) {
+    public String createAuto(ReservationDto reservationDto) {
         ReservationServiceGrpc.ReservationServiceBlockingStub blockingStub = getStub();
+        Reservation reservation = findAvailabilitySlotForReservation(reservationDto);
         MessageResponse response = blockingStub.acceptReservationAuto(convertReservationToReservationGrpc(reservation));
         return response.getMessage();
     }

@@ -31,7 +31,23 @@ public class AccommodationService {
     }
 
     public List<Accommodation> search(AccommodationSearchDto accommodationSearchDto) {
-        return null;
+        AccommodationServiceGrpc.AccommodationServiceBlockingStub blockingStub = getStub();
+        SearchAccommodationDto request = SearchAccommodationDto.newBuilder()
+                .setLocation(accommodationSearchDto.getLocation())
+                .setGuestCount(accommodationSearchDto.getGuestCount())
+                .setStartYear(accommodationSearchDto.getStart().getYear())
+                .setStartMonth(accommodationSearchDto.getStart().getMonthValue())
+                .setStartDay(accommodationSearchDto.getStart().getDayOfMonth())
+                .setEndYear(accommodationSearchDto.getEnd().getYear())
+                .setEndMonth(accommodationSearchDto.getEnd().getMonthValue())
+                .setEndDay(accommodationSearchDto.getEnd().getDayOfMonth())
+                .build();
+        ListAccommodation accommodations = blockingStub.search(request);
+        List<Accommodation> retVal = new ArrayList<>();
+        for (communication.AccommodationFull a: accommodations.getAccommodationsList()) {
+            retVal.add(convertAccommodationGrpcToAccommodation(a));
+        }
+        return retVal;
     }
 
     public List<Accommodation> findAllByUser(Long userId) {
