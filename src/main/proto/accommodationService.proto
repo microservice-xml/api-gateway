@@ -7,6 +7,7 @@ import "model.proto";
 
 service AccommodationService {
   rpc findAllByUser(UserId) returns (ListAccommodation);
+  rpc search(SearchAccommodationDto) returns (ListAccommodation);
 }
 
 message UserId {
@@ -29,4 +30,15 @@ message AccommodationFull {
 
 message ListAccommodation {
   repeated AccommodationFull accommodations = 1;
+}
+
+message SearchAccommodationDto {
+  string location = 1;
+  int32 startYear = 2;
+  int32 startMonth = 3;
+  int32 startDay = 4;
+  int32 endYear = 5;
+  int32 endMonth = 6;
+  int32 endDay = 7;
+  int32 guestCount = 8;
 }
