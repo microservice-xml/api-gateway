@@ -20,6 +20,8 @@ service ReservationService {
 
 service AvailabilitySlotService {
   rpc findAllAvailabilitySlotsByAccommodationId(LongId) returns (ListAvailabilitySlotFull);
+  rpc add(AvailabilitySlotFull) returns (EmptyMessage);
+  rpc edit(AvailabilitySlotFull) returns (EmptyMessage);
 }
 
 message LongId {
@@ -84,5 +86,6 @@ message AvailabilitySlotFull {
   int32 endDay = 7;
   double price = 8;
   repeated Reservation reservations = 9;
+  int64 accommodationId = 10;
 }
 

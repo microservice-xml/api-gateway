@@ -1,5 +1,6 @@
 package com.gateway.apigateway.service;
 
+import com.gateway.apigateway.model.AvailabilitySlot;
 import communication.*;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.gateway.apigateway.mapper.AvailabilitySlotMapper.convertAvailabilitySlotGrpcToAvailabilitySlot;
+import static com.gateway.apigateway.mapper.AvailabilitySlotMapper.convertAvailabilitySlotToAvailabilitySlotGrpc;
 
 @Service
 @RequiredArgsConstructor
@@ -29,5 +31,16 @@ public class AvailabilitySlotService {
             retVal.add(convertAvailabilitySlotGrpcToAvailabilitySlot(a));
         }
         return retVal;
+    }
+
+    public void add(AvailabilitySlot availabilitySlot) {
+        AvailabilitySlotServiceGrpc.AvailabilitySlotServiceBlockingStub blockingStub = getStub();
+        availabilitySlot.setId("");
+        EmptyMessage emptyMessage = blockingStub.add(convertAvailabilitySlotToAvailabilitySlotGrpc(availabilitySlot));
+    }
+
+    public void edit(AvailabilitySlot availabilitySlot) {
+        AvailabilitySlotServiceGrpc.AvailabilitySlotServiceBlockingStub blockingStub = getStub();
+        EmptyMessage emptyMessage = blockingStub.edit(convertAvailabilitySlotToAvailabilitySlotGrpc(availabilitySlot));
     }
 }
