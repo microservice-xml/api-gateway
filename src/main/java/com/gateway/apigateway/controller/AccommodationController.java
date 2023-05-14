@@ -2,9 +2,11 @@ package com.gateway.apigateway.controller;
 
 import com.gateway.apigateway.dto.AccommodationSearchDto;
 import com.gateway.apigateway.model.Accommodation;
+import com.gateway.apigateway.model.User;
 import com.gateway.apigateway.service.AccommodationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,5 +35,13 @@ public class AccommodationController {
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Accommodation>> findAllByUser(@PathVariable Long userId) {
         return new ResponseEntity<>(accommodationService.findAllByUser(userId), OK);
+    }
+    @PostMapping("/add-accommodation")
+    public ResponseEntity addAccommodation(@RequestBody Accommodation accommodation){
+        try{
+            return ResponseEntity.status(HttpStatus.OK).body(accommodationService.addAccommodation(accommodation));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Create accommodation failed.");
+        }
     }
 }
