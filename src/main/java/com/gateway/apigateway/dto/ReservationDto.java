@@ -16,4 +16,5 @@ public class ReservationDto {
     LocalDate start;
     LocalDate end;
     int nog;
+    Long hostId;
 }

@@ -45,6 +45,7 @@ public class ReservationService {
                         .start(reservationDto.getStart())
                         .numberOfGuests(reservationDto.getNog())
                         .userId(reservationDto.getUserId())
+                        .hostId(reservationDto.getHostId())
                         .build();
             }
         }
@@ -108,6 +109,16 @@ public class ReservationService {
     public List<Reservation> findAllByUserId(Long id) {
         ReservationServiceGrpc.ReservationServiceBlockingStub blockingStub = getStub();
         ListReservation reservations = blockingStub.findAllByUserId(LongId.newBuilder().setId(id).build());
+        List<Reservation> retVal = new ArrayList<>();
+        for(communication.Reservation res : reservations.getReservationsList()){
+            retVal.add(convertReservationGrpcToReservation(res));
+        }
+        return retVal;
+    }
+
+    public List<Reservation> findAllByHostId(Long id) {
+        ReservationServiceGrpc.ReservationServiceBlockingStub blockingStub = getStub();
+        ListReservation reservations = blockingStub.findAllByHostId(LongId.newBuilder().setId(id).build());
         List<Reservation> retVal = new ArrayList<>();
         for(communication.Reservation res : reservations.getReservationsList()){
             retVal.add(convertReservationGrpcToReservation(res));

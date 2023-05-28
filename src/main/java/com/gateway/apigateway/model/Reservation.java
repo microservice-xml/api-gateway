@@ -25,4 +25,6 @@ public class Reservation {
     private String slotId;
 
     private int numberOfGuests;
+
+    private Long hostId;
 }

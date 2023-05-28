@@ -56,6 +56,16 @@ public class ReservationController {
         else
             return ResponseEntity.status(HttpStatus.OK).body(reservations);
     }
+
+    @GetMapping("/hostId/{id}")
+    public ResponseEntity findAllByHostId(@PathVariable Long id) {
+        List<Reservation> reservations = reservationService.findAllByHostId(id);
+        if (reservations.isEmpty())
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("List is empty.");
+        else
+            return ResponseEntity.status(HttpStatus.OK).body(reservations);
+    }
+
     @GetMapping("/accommodation/{id}")
     public ResponseEntity findByAccomodationId(@PathVariable Long id) {
         List<Reservation> reservations = reservationService.findByAccomodationId(id);
