@@ -2,9 +2,7 @@ package com.gateway.apigateway.service;
 
 
 import com.gateway.apigateway.model.User;
-import communication.EmptyRequest;
-import communication.UserList;
-import communication.userDetailsServiceGrpc;
+import communication.*;
 
 import com.gateway.apigateway.dto.User.UserDto;
 import com.gateway.apigateway.mapper.UserMapper;
@@ -14,8 +12,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import static com.gateway.apigateway.mapper.ReservationMapper.convertReservationGrpcToReservation;
 import static com.gateway.apigateway.mapper.UserMapper.*;
 
 @Service
@@ -41,9 +41,12 @@ public class UserService {
                 .usePlaintext()
                 .build();
         userDetailsServiceGrpc.userDetailsServiceBlockingStub blockingStub = userDetailsServiceGrpc.newBlockingStub(channel);
-        UserList finaListUsers = blockingStub.findAll(EmptyRequest.newBuilder().build());
-
-        return convertUsersGrpcToUsers(finaListUsers);
+        UserList users = blockingStub.findAll(EmptyRequest.newBuilder().build());
+        List<User> retVal = new ArrayList<>();
+        for(communication.User user : users.getUsersList()){
+            retVal.add(convertUserGrpcToUser(user));
+        }
+        return retVal;
     }
 
     public String deleteUser(Long id) {
