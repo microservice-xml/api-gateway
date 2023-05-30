@@ -12,8 +12,10 @@ public class ReservationStatusMapper {
             return ReservationStatus.ACCEPTED;
         else if(status.equals(com.gateway.apigateway.model.ReservationStatus.PENDING))
             return ReservationStatus.PENDING;
-        else
+        else if(status.equals(com.gateway.apigateway.model.ReservationStatus.DECLINED))
             return ReservationStatus.DECLINED;
+        else
+            return  ReservationStatus.CANCELED;
 
     }
 
@@ -22,8 +24,9 @@ public class ReservationStatusMapper {
             return com.gateway.apigateway.model.ReservationStatus.ACCEPTED;
         else if(status.equals(ReservationStatus.PENDING))
             return com.gateway.apigateway.model.ReservationStatus.PENDING;
-        else
+        else if(status.equals(ReservationStatus.DECLINED))
             return com.gateway.apigateway.model.ReservationStatus.DECLINED;
+        else return com.gateway.apigateway.model.ReservationStatus.CANCELED;
 
     }
 }
