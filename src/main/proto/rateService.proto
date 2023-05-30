@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+package communication;
+import "model.proto";
+
+service rateService {
+  rpc rateHost(Rate) returns (MessageResponse);
+  rpc changeRate(Rate) returns (Rate);
+  rpc deleteRate(UserIdRequest) returns (Rate);
+  rpc rateAccommodation(AccommodationRate) returns (MessageResponse);
+  rpc changeAccommodationRate(AccommodationRate) returns (AccommodationRate);
+  rpc deleteAccommodationRate(UserIdRequest) returns (AccommodationRate);
+}
