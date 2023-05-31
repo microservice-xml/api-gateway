@@ -4,6 +4,7 @@ import com.gateway.apigateway.auth.RegistrationRequest;
 import com.gateway.apigateway.dto.User.UserDto;
 import com.gateway.apigateway.model.User;
 import communication.RegisterUser;
+import communication.RegisterUserAvgGrade;
 import communication.Role;
 import communication.UserList;
 import lombok.RequiredArgsConstructor;
@@ -106,6 +107,20 @@ public class UserMapper {
                 .location(user.getLocation())
                 .role(convertToEntityRole(user.getRole()))
                 .username(user.getUsername())
+                .build();
+    }
+
+    public static UserDto convertFromMessageToUserDto(RegisterUserAvgGrade user) {
+        return UserDto.builder()
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .phoneNumber(user.getPhoneNumber())
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .location(user.getLocation())
+                .role(convertToEntityRole(user.getRole()))
+                .username(user.getUsername())
+                .avgGrade(user.getAvgGrade())
                 .build();
     }
 }

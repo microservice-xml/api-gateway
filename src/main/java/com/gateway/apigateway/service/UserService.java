@@ -63,7 +63,7 @@ public class UserService {
                 .build();
         userDetailsServiceGrpc.userDetailsServiceBlockingStub blockingStub = userDetailsServiceGrpc.newBlockingStub(channel);
 
-        communication.RegisterUser user = blockingStub.getById(communication.UserIdRequest.newBuilder().setId(id).build());
+        communication.RegisterUserAvgGrade user = blockingStub.getById(communication.UserIdRequest.newBuilder().setId(id).build());
 
         return UserMapper.convertFromMessageToUserDto(user);
     }
