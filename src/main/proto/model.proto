@@ -64,6 +64,10 @@ message Rate {
   uint64 id = 5;
 }
 
+message ListRate {
+  repeated Rate rates = 1;
+}
+
 message AccommodationRate {
   uint64 hostId = 1;
   uint64 guestId = 2;

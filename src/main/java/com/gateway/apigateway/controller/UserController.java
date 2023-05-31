@@ -22,7 +22,7 @@ public class UserController {
     @Autowired
     UserService userService;
     @GetMapping("/all")
-    @Secured({ "HOST" })
+    //@Secured({ "HOST" })
     public ResponseEntity findAll() {
         return ResponseEntity.status(HttpStatus.OK).body(userService.findAll());
     }
