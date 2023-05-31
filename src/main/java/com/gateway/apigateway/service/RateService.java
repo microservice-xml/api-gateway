@@ -6,11 +6,14 @@ import com.gateway.apigateway.model.Rate;
 import com.gateway.apigateway.model.RateAccommodation;
 import com.gateway.apigateway.model.Reservation;
 import communication.*;
+import communication.AccommodationRate;
+import communication.Id;
+import communication.MessageResponse;
+import communication.rateServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 
