@@ -26,4 +26,8 @@ public class RateController {
     public ResponseEntity deleteRate(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK).body(rateService.deleteRate(id));
     }
+    @GetMapping("/{id}")
+    public ResponseEntity getALlByHostId(@PathVariable Long id){
+        return ResponseEntity.status(HttpStatus.OK).body(rateService.getAllByHostId(id));
+    }
 }
