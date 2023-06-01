@@ -9,11 +9,14 @@ service AccommodationService {
   rpc findAllByUser(UserId) returns (ListAccommodation);
   rpc addAccommodation(AccommodationFull) returns (MessageResponse);
   rpc search(SearchAccommodationDto) returns (ListAccommodation);
+  rpc findAll(Empty) returns (ListAccommodation);
 }
 
 message UserId {
   int64 userId = 1;
 }
+
+message Empty {}
 
 message AccommodationFull {
   int64 id = 1;

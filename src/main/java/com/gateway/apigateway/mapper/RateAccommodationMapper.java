@@ -5,8 +5,10 @@ import com.gateway.apigateway.model.RateAccommodation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
@@ -42,6 +44,20 @@ public class RateAccommodationMapper {
 
         return request;
     }
+    public static RateAccommodation convertFromMessageToRateAccommodation(communication.AccommodationRate rate) {
+        LocalDate rateDate = LocalDate.parse(rate.getRateDate());
+
+        RateAccommodation convertedRate = new RateAccommodation();
+        convertedRate.setId(rate.getId());
+        convertedRate.setAccommodationId(rate.getAccommodationId());
+        convertedRate.setHostId(rate.getHostId());
+        convertedRate.setGuestId(rate.getGuestId());
+        convertedRate.setRateValue(rate.getRateValue());
+        convertedRate.setRateDate(rateDate);
+
+        return convertedRate;
+    }
+
 
     public static RateAccommodation convertRateRequestToEntity(communication.AccommodationRate request) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");

@@ -15,6 +15,7 @@ import java.util.List;
 
 import static com.gateway.apigateway.mapper.AccommodationMapper.convertAccommodationGrpcToAccommodation;
 import static com.gateway.apigateway.mapper.ReservationMapper.convertReservationToReservationGrpc;
+import static com.gateway.apigateway.mapper.UserMapper.convertUserGrpcToUser;
 
 @Service
 @RequiredArgsConstructor
@@ -24,10 +25,6 @@ public class AccommodationService {
                 .usePlaintext()
                 .build();
         return AccommodationServiceGrpc.newBlockingStub(channel);
-    }
-
-    public List<Accommodation> findAll() {
-        return null;
     }
 
     public List<Accommodation> search(AccommodationSearchDto accommodationSearchDto) {
@@ -70,5 +67,18 @@ public class AccommodationService {
 
         MessageResponse response = blockingStub.addAccommodation(request);
         return response.getMessage();
+    }
+
+    public List<Accommodation> findAll() {
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 9094)
+                .usePlaintext()
+                .build();
+        AccommodationServiceGrpc.AccommodationServiceBlockingStub blockingStub = AccommodationServiceGrpc.newBlockingStub(channel);
+        ListAccommodation accommodations = blockingStub.findAll(Empty.newBuilder().build());
+        List<Accommodation> retVal = new ArrayList<>();
+        for(communication.AccommodationFull acc : accommodations.getAccommodationsList()){
+            retVal.add(convertAccommodationGrpcToAccommodation(acc));
+        }
+        return retVal;
     }
 }

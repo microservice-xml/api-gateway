@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.gateway.apigateway.mapper.RateAccommodationMapper.convertFromMessageToRateWithId;
 import static com.gateway.apigateway.mapper.RateMapper.convertRateRequestToEntity;
 import static com.gateway.apigateway.mapper.RateMapper.convertRateRequestToEntityWithId;
 import static com.gateway.apigateway.mapper.ReservationMapper.convertReservationGrpcToReservation;
@@ -80,7 +81,7 @@ public class RateService {
                 .build();
         rateServiceGrpc.rateServiceBlockingStub blockingStub = rateServiceGrpc.newBlockingStub(channel);
 
-        communication.AccommodationRate r = RateAccommodationMapper.convertFromMessageToRateWithId(rate);
+        communication.AccommodationRate r = convertFromMessageToRateWithId(rate);
         communication.AccommodationRate response = blockingStub.changeAccommodationRate(r);
         return RateAccommodationMapper.convertRateRequestToEntityWithId(response);
     }
@@ -113,6 +114,24 @@ public class RateService {
         List<Rate> retVal = new ArrayList<>();
         for(communication.Rate rate : rates.getRatesList()){
             retVal.add(convertRateRequestToEntityWithId(rate));
+        }
+        return retVal;
+    }
+
+    public List<RateAccommodation> findAllByAccommodationId(Long id) {
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 9094)
+                .usePlaintext()
+                .build();
+        rateServiceGrpc.rateServiceBlockingStub blockingStub = rateServiceGrpc.newBlockingStub(channel);
+
+        communication.UserIdRequest request = communication.UserIdRequest.newBuilder()
+                .setId(id)
+                .build();
+
+        ListAccommodationRate rates = blockingStub.findAllByAccommodationId(request);
+        List<RateAccommodation> retVal = new ArrayList<>();
+        for (communication.AccommodationRate rate : rates.getAccommodationRatesList()) {
+            retVal.add(RateAccommodationMapper.convertFromMessageToRateAccommodation(rate));
         }
         return retVal;
     }

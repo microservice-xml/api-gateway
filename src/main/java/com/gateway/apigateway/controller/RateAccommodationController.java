@@ -29,4 +29,9 @@ public class RateAccommodationController {
     public ResponseEntity deleteAccommodationRate(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK).body(rateService.deleteAccommodationRate(id));
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity findAllByAccommodationId(@PathVariable Long id){
+        return ResponseEntity.status(HttpStatus.OK).body(rateService.findAllByAccommodationId(id));
+    }
 }
