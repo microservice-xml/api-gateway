@@ -44,4 +44,10 @@ public class AccommodationController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Create accommodation failed.");
         }
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity findById(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(accommodationService.findById(id));
+    }
+
 }

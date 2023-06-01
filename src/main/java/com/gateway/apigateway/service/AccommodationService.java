@@ -1,5 +1,6 @@
 package com.gateway.apigateway.service;
 
+import com.gateway.apigateway.dto.User.UserDto;
 import com.gateway.apigateway.mapper.AccommodationMapper;
 import com.gateway.apigateway.mapper.UserMapper;
 import com.gateway.apigateway.model.Accommodation;
@@ -80,5 +81,16 @@ public class AccommodationService {
             retVal.add(convertAccommodationGrpcToAccommodation(acc));
         }
         return retVal;
+    }
+
+    public Accommodation findById(Long id) {
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 9094)
+                .usePlaintext()
+                .build();
+        AccommodationServiceGrpc.AccommodationServiceBlockingStub blockingStub = AccommodationServiceGrpc.newBlockingStub(channel);
+
+        communication.AccommodationWithGrade acc = blockingStub.findById(communication.UserIdRequest.newBuilder().setId(id).build());
+
+        return AccommodationMapper.convertAccommodationGrpcToAccommodationWithGrade(acc);
     }
 }

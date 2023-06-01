@@ -10,6 +10,7 @@ service AccommodationService {
   rpc addAccommodation(AccommodationFull) returns (MessageResponse);
   rpc search(SearchAccommodationDto) returns (ListAccommodation);
   rpc findAll(Empty) returns (ListAccommodation);
+  rpc findById(UserIdRequest) returns (AccommodationWithGrade);
 }
 
 message UserId {

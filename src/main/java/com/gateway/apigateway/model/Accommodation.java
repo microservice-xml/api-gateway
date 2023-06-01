@@ -21,4 +21,5 @@ public class Accommodation {
     private Long accommodationGradeId;
     private boolean isAuto;
     private Long userId;
+    private float avgGrade;
 }

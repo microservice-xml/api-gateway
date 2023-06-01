@@ -27,6 +27,23 @@ public class AccommodationMapper {
                 .build();
     }
 
+    public static Accommodation convertAccommodationGrpcToAccommodationWithGrade(communication.AccommodationWithGrade accommodation){
+        return Accommodation.builder()
+                .id(accommodation.getId())
+                .name(accommodation.getName())
+                .location(accommodation.getLocation())
+                .facilities(accommodation.getFacilities())
+                .photo(accommodation.getPhoto())
+                .minGuests(accommodation.getMinGuests())
+                .maxGuests(accommodation.getMaxGuests())
+                .availableBeds(accommodation.getAvailableBeds())
+                .accommodationGradeId(accommodation.getAccommodationGradeId())
+                .isAuto(accommodation.getIsAuto())
+                .userId(accommodation.getUserId())
+                .avgGrade(accommodation.getAvgGrade())
+                .build();
+    }
+
     public static AccommodationFull convertAccommodationToAccommodationGrpc(Accommodation accommodation) {
         AccommodationFull request = AccommodationFull.newBuilder()
                 .setLocation(accommodation.getLocation())
