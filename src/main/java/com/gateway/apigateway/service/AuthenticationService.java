@@ -49,6 +49,7 @@ public class AuthenticationService implements UserDetailsService {
                 .password(response.getPassword())
                 .role(response.getRole().equals(Role.GUEST) ? com.gateway.apigateway.model.Role.GUEST : com.gateway.apigateway.model.Role.HOST)
                 .penalties(response.getPenalties()).build();
+        channel.shutdown();
         return user;
     }
 
