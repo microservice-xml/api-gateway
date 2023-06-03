@@ -31,6 +31,8 @@ message AccommodationFull {
   int64 accommodationGradeId = 9;
   bool isAuto = 10;
   int64 userId = 11;
+  double avgGrade = 12;
+  double price = 13;
 }
 
 message ListAccommodation {

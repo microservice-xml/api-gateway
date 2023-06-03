@@ -1,8 +1,9 @@
 package com.gateway.apigateway.service;
 
-import com.gateway.apigateway.dto.User.UserDto;
+ import com.gateway.apigateway.dto.User.UserDto;
 import com.gateway.apigateway.mapper.AccommodationMapper;
 import com.gateway.apigateway.mapper.UserMapper;
+import com.gateway.apigateway.dto.AccommodationDto;
 import com.gateway.apigateway.model.Accommodation;
 import com.gateway.apigateway.dto.AccommodationSearchDto;
 import communication.*;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.gateway.apigateway.mapper.AccommodationMapper.convertAccommodationGrpcToAccommodation;
+import static com.gateway.apigateway.mapper.AccommodationMapper.convertAccommodationGrpcToAccommodationDto;
 import static com.gateway.apigateway.mapper.ReservationMapper.convertReservationToReservationGrpc;
 import static com.gateway.apigateway.mapper.UserMapper.convertUserGrpcToUser;
 
@@ -28,7 +30,7 @@ public class AccommodationService {
         return AccommodationServiceGrpc.newBlockingStub(channel);
     }
 
-    public List<Accommodation> search(AccommodationSearchDto accommodationSearchDto) {
+    public List<AccommodationDto> search(AccommodationSearchDto accommodationSearchDto) {
         AccommodationServiceGrpc.AccommodationServiceBlockingStub blockingStub = getStub();
         SearchAccommodationDto request = SearchAccommodationDto.newBuilder()
                 .setLocation(accommodationSearchDto.getLocation())
@@ -41,9 +43,9 @@ public class AccommodationService {
                 .setEndDay(accommodationSearchDto.getEnd().getDayOfMonth())
                 .build();
         ListAccommodation accommodations = blockingStub.search(request);
-        List<Accommodation> retVal = new ArrayList<>();
+        List<AccommodationDto> retVal = new ArrayList<>();
         for (communication.AccommodationFull a: accommodations.getAccommodationsList()) {
-            retVal.add(convertAccommodationGrpcToAccommodation(a));
+            retVal.add(convertAccommodationGrpcToAccommodationDto(a));
         }
         return retVal;
     }
