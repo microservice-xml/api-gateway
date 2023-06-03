@@ -1,5 +1,6 @@
 package com.gateway.apigateway.controller;
 
+import com.gateway.apigateway.dto.AccommodationDto;
 import com.gateway.apigateway.dto.AccommodationSearchDto;
 import com.gateway.apigateway.model.Accommodation;
 import com.gateway.apigateway.model.User;
@@ -28,7 +29,7 @@ public class AccommodationController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<List<Accommodation>> search(@RequestBody AccommodationSearchDto accommodationSearchDto) {
+    public ResponseEntity<List<AccommodationDto>> search(@RequestBody AccommodationSearchDto accommodationSearchDto) {
         return ResponseEntity.status(OK).body(accommodationService.search(accommodationSearchDto));
     }
 

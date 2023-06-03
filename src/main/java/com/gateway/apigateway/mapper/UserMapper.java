@@ -88,15 +88,15 @@ public class UserMapper {
                 .build();
     }
 
-    public static List<User> convertUsersGrpcToUsers(UserList communicationUserList) {
-        List<User> userList = new ArrayList<>();
-
-        for (communication.User communicationUser : communicationUserList.getUsersList()) {
-            User user = convertUserGrpcToUser(communicationUser);
-            userList.add(user);
-        }
-        return userList;
-    }
+//    public static List<User> convertUsersGrpcToUsers(UserList communicationUserList) {
+//        List<User> userList = new ArrayList<>();
+//
+//        for (communication.User communicationUser : communicationUserList.getUsersList()) {
+//            User user = convertUserGrpcToUser(communicationUser);
+//            userList.add(user);
+//        }
+//        return userList;
+//    }
     public static UserDto convertFromMessageToUserDto(RegisterUser user) {
         return UserDto.builder()
                 .firstName(user.getFirstName())
@@ -122,5 +122,31 @@ public class UserMapper {
                 .username(user.getUsername())
                 .avgGrade(user.getAvgGrade())
                 .build();
+    }
+
+    public static User convertUserExtendedGrpcToUser(communication.UserExtended communicationUser) {
+        return User.builder()
+                .id(communicationUser.getId())
+                .location(communicationUser.getLocation())
+                .email(communicationUser.getEmail())
+                .username(communicationUser.getUsername())
+                .firstName(communicationUser.getFirstName())
+                .lastName(communicationUser.getLastName())
+                .phoneNumber(communicationUser.getPhoneNumber())
+                .penalties(communicationUser.getPenalties())
+                .password(communicationUser.getPassword())
+                .role(convertToEntityRole(communicationUser.getRole()))
+                .isHighlighted(communicationUser.getIsHighlighted())
+                .build();
+    }
+
+    public static List<User> convertUsersExtendedGrpcToUsers(UserList communicationUserList) {
+        List<User> userList = new ArrayList<>();
+
+        for (communication.UserExtended communicationUser : communicationUserList.getUsersList()) {
+            User user = convertUserExtendedGrpcToUser(communicationUser);
+            userList.add(user);
+        }
+        return userList;
     }
 }

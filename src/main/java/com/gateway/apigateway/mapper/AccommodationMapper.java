@@ -27,6 +27,24 @@ public class AccommodationMapper {
                 .build();
     }
 
+    public static com.gateway.apigateway.dto.AccommodationDto convertAccommodationGrpcToAccommodationDto(communication.AccommodationFull accommodation){
+        return com.gateway.apigateway.dto.AccommodationDto.builder()
+                .id(accommodation.getId())
+                .name(accommodation.getName())
+                .location(accommodation.getLocation())
+                .facilities(accommodation.getFacilities())
+                .photo(accommodation.getPhoto())
+                .minGuests(accommodation.getMinGuests())
+                .maxGuests(accommodation.getMaxGuests())
+                .availableBeds(accommodation.getAvailableBeds())
+                .accommodationGradeId(accommodation.getAccommodationGradeId())
+                .isAuto(accommodation.getIsAuto())
+                .userId(accommodation.getUserId())
+                .avgGrade((float) accommodation.getAvgGrade())
+                .price(accommodation.getPrice())
+                .build();
+    }
+
     public static Accommodation convertAccommodationGrpcToAccommodationWithGrade(communication.AccommodationWithGrade accommodation){
         return Accommodation.builder()
                 .id(accommodation.getId())
@@ -59,5 +77,4 @@ public class AccommodationMapper {
                 .build();
         return request;
     }
-
 }

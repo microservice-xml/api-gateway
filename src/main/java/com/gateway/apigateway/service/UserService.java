@@ -41,12 +41,9 @@ public class UserService {
                 .usePlaintext()
                 .build();
         userDetailsServiceGrpc.userDetailsServiceBlockingStub blockingStub = userDetailsServiceGrpc.newBlockingStub(channel);
-        UserList users = blockingStub.findAll(EmptyRequest.newBuilder().build());
-        List<User> retVal = new ArrayList<>();
-        for(communication.User user : users.getUsersList()){
-            retVal.add(convertUserGrpcToUser(user));
-        }
-        return retVal;
+        UserList finaListUsers = blockingStub.findAll(EmptyRequest.newBuilder().build());
+
+        return convertUsersExtendedGrpcToUsers(finaListUsers);
     }
 
     public String deleteUser(Long id) {
