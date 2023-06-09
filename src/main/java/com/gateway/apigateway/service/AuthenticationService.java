@@ -8,6 +8,8 @@ import communication.*;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,6 +26,11 @@ public class AuthenticationService implements UserDetailsService {
 
     private final String url = "http://localhost:8083/api/user/user-details/";
 
+//    @Value("${user.api.grpc.address}")
+//    private String userApiGrpcAddress;
+
+    private final String userApiGrpcAddress = "user-api";
+
     @Override
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
         try {
@@ -36,7 +43,8 @@ public class AuthenticationService implements UserDetailsService {
 
     private User getUserDetails(String username){
 
-        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 9093)
+        System.out.println(userApiGrpcAddress);
+        ManagedChannel channel = ManagedChannelBuilder.forAddress(userApiGrpcAddress, 9093)
                 .usePlaintext()
                 .build();
 
@@ -49,12 +57,14 @@ public class AuthenticationService implements UserDetailsService {
                 .password(response.getPassword())
                 .role(response.getRole().equals(Role.GUEST) ? com.gateway.apigateway.model.Role.GUEST : com.gateway.apigateway.model.Role.HOST)
                 .penalties(response.getPenalties()).build();
-        channel.shutdown();
+        if (channel != null && !channel.isShutdown()) {
+            channel.shutdown();
+        }
         return user;
     }
 
     public String register(User user) {
-        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 9093)
+        ManagedChannel channel = ManagedChannelBuilder.forAddress(userApiGrpcAddress, 9093)
                 .usePlaintext()
                 .build();
 
@@ -63,6 +73,9 @@ public class AuthenticationService implements UserDetailsService {
         RegisterUser request = UserMapper.convertToRegistrationRequest(user);
 
         MessageResponse response = blockingStub.register(request);
+        if (channel != null && !channel.isShutdown()) {
+            channel.shutdown();
+        }
         return response.getMessage();
     }
 

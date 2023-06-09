@@ -5,6 +5,7 @@ import communication.*;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,31 +17,54 @@ import static com.gateway.apigateway.mapper.AvailabilitySlotMapper.convertAvaila
 @Service
 @RequiredArgsConstructor
 public class AvailabilitySlotService {
+
+    @Value("${reservation-api.grpc.address}")
+    private String reservationApiGrpcAddress;
+
+
     private AvailabilitySlotServiceGrpc.AvailabilitySlotServiceBlockingStub getStub() {
-        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 9095)
+        ManagedChannel channel = ManagedChannelBuilder.forAddress(reservationApiGrpcAddress, 9095)
                 .usePlaintext()
                 .build();
         return AvailabilitySlotServiceGrpc.newBlockingStub(channel);
     }
 
     public List<com.gateway.apigateway.model.AvailabilitySlot> getAllByAccommodationId(Long accommodationId) {
-        AvailabilitySlotServiceGrpc.AvailabilitySlotServiceBlockingStub blockingStub = getStub();
+        ManagedChannel channel = ManagedChannelBuilder.forAddress(reservationApiGrpcAddress, 9095)
+                .usePlaintext()
+                .build();
+        AvailabilitySlotServiceGrpc.AvailabilitySlotServiceBlockingStub blockingStub = AvailabilitySlotServiceGrpc.newBlockingStub(channel);
         ListAvailabilitySlotFull listAvailabilitySlotFull = blockingStub.findAllAvailabilitySlotsByAccommodationId(LongId.newBuilder().setId(accommodationId).build());
         List<com.gateway.apigateway.model.AvailabilitySlot> retVal = new ArrayList<>();
         for (communication.AvailabilitySlotFull a: listAvailabilitySlotFull.getAvailabilitySlotsList()) {
             retVal.add(convertAvailabilitySlotGrpcToAvailabilitySlot(a));
         }
+        if (channel != null && !channel.isShutdown()) {
+            channel.shutdown();
+        }
         return retVal;
     }
 
     public void add(AvailabilitySlot availabilitySlot) {
-        AvailabilitySlotServiceGrpc.AvailabilitySlotServiceBlockingStub blockingStub = getStub();
+        ManagedChannel channel = ManagedChannelBuilder.forAddress(reservationApiGrpcAddress, 9095)
+                .usePlaintext()
+                .build();
+        AvailabilitySlotServiceGrpc.AvailabilitySlotServiceBlockingStub blockingStub = AvailabilitySlotServiceGrpc.newBlockingStub(channel);
         availabilitySlot.setId("");
         EmptyMessage emptyMessage = blockingStub.add(convertAvailabilitySlotToAvailabilitySlotGrpc(availabilitySlot));
+        if (channel != null && !channel.isShutdown()) {
+            channel.shutdown();
+        }
     }
 
     public void edit(AvailabilitySlot availabilitySlot) {
-        AvailabilitySlotServiceGrpc.AvailabilitySlotServiceBlockingStub blockingStub = getStub();
+        ManagedChannel channel = ManagedChannelBuilder.forAddress(reservationApiGrpcAddress, 9095)
+                .usePlaintext()
+                .build();
+        AvailabilitySlotServiceGrpc.AvailabilitySlotServiceBlockingStub blockingStub = AvailabilitySlotServiceGrpc.newBlockingStub(channel);
         EmptyMessage emptyMessage = blockingStub.edit(convertAvailabilitySlotToAvailabilitySlotGrpc(availabilitySlot));
+        if (channel != null && !channel.isShutdown()) {
+            channel.shutdown();
+        }
     }
 }

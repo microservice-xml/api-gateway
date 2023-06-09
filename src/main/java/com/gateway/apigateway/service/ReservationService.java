@@ -6,6 +6,7 @@ import communication.*;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,18 +21,28 @@ import static com.gateway.apigateway.mapper.ReservationStatusMapper.convertReser
 @RequiredArgsConstructor
 public class ReservationService {
     private final AvailabilitySlotService availabilitySlotService;
+
+    @Value("${reservation-api.grpc.address}")
+    private String reservationApiGrpcAddress;
+
     private ReservationServiceGrpc.ReservationServiceBlockingStub getStub() {
-        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 9095)
+        ManagedChannel channel = ManagedChannelBuilder.forAddress(reservationApiGrpcAddress, 9095)
                 .usePlaintext()
                 .build();
         return ReservationServiceGrpc.newBlockingStub(channel);
     }
 
     public String create(ReservationDto reservationDto) {
-        ReservationServiceGrpc.ReservationServiceBlockingStub blockingStub = getStub();
+        ManagedChannel channel = ManagedChannelBuilder.forAddress(reservationApiGrpcAddress, 9095)
+                .usePlaintext()
+                .build();
+        ReservationServiceGrpc.ReservationServiceBlockingStub blockingStub = ReservationServiceGrpc.newBlockingStub(channel);
 
         Reservation reservation = findAvailabilitySlotForReservation(reservationDto);
         MessageResponse response = blockingStub.createRequest(convertReservationToReservationGrpc(reservation));
+        if (channel != null && !channel.isShutdown()) {
+            channel.shutdown();
+        }
         return response.getMessage();
     }
 
@@ -57,81 +68,142 @@ public class ReservationService {
     }
 
     public Reservation findById(String id) {
-        ReservationServiceGrpc.ReservationServiceBlockingStub blockingStub = getStub();
-        return convertReservationGrpcToReservation(blockingStub.findById(Id.newBuilder().setId(id).build()));
+        ManagedChannel channel = ManagedChannelBuilder.forAddress(reservationApiGrpcAddress, 9095)
+                .usePlaintext()
+                .build();
+        ReservationServiceGrpc.ReservationServiceBlockingStub blockingStub = ReservationServiceGrpc.newBlockingStub(channel);
+        var retVal = blockingStub.findById(Id.newBuilder().setId(id).build());
+        if (channel != null && !channel.isShutdown()) {
+            channel.shutdown();
+        }
+        return convertReservationGrpcToReservation(retVal);
     }
 
     public String createAuto(ReservationDto reservationDto) {
-        ReservationServiceGrpc.ReservationServiceBlockingStub blockingStub = getStub();
+        ManagedChannel channel = ManagedChannelBuilder.forAddress(reservationApiGrpcAddress, 9095)
+                .usePlaintext()
+                .build();
+        ReservationServiceGrpc.ReservationServiceBlockingStub blockingStub = ReservationServiceGrpc.newBlockingStub(channel);
         Reservation reservation = findAvailabilitySlotForReservation(reservationDto);
         MessageResponse response = blockingStub.acceptReservationAuto(convertReservationToReservationGrpc(reservation));
+        if (channel != null && !channel.isShutdown()) {
+            channel.shutdown();
+        }
         return response.getMessage();
     }
 
     public String cancel(String id) {
-        ReservationServiceGrpc.ReservationServiceBlockingStub blockingStub = getStub();
+        ManagedChannel channel = ManagedChannelBuilder.forAddress(reservationApiGrpcAddress, 9095)
+                .usePlaintext()
+                .build();
+        ReservationServiceGrpc.ReservationServiceBlockingStub blockingStub = ReservationServiceGrpc.newBlockingStub(channel);
         MessageResponse response = blockingStub.cancel(Id.newBuilder().setId(id).build());
+        if (channel != null && !channel.isShutdown()) {
+            channel.shutdown();
+        }
         return response.getMessage();
     }
 
     public String reject(String id) {
-        ReservationServiceGrpc.ReservationServiceBlockingStub blockingStub = getStub();
+        ManagedChannel channel = ManagedChannelBuilder.forAddress(reservationApiGrpcAddress, 9095)
+                .usePlaintext()
+                .build();
+        ReservationServiceGrpc.ReservationServiceBlockingStub blockingStub = ReservationServiceGrpc.newBlockingStub(channel);
         MessageResponse response = blockingStub.rejectRequest(Id.newBuilder().setId(id).build());
+        if (channel != null && !channel.isShutdown()) {
+            channel.shutdown();
+        }
         return response.getMessage();
     }
 
     public String accept(String id) {
-        ReservationServiceGrpc.ReservationServiceBlockingStub blockingStub = getStub();
+        ManagedChannel channel = ManagedChannelBuilder.forAddress(reservationApiGrpcAddress, 9095)
+                .usePlaintext()
+                .build();
+        ReservationServiceGrpc.ReservationServiceBlockingStub blockingStub = ReservationServiceGrpc.newBlockingStub(channel);
         MessageResponse response = blockingStub.acceptReservationManual(Id.newBuilder().setId(id).build());
+        if (channel != null && !channel.isShutdown()) {
+            channel.shutdown();
+        }
         return response.getMessage();
     }
 
     public List<Reservation> findAll() {
-        ReservationServiceGrpc.ReservationServiceBlockingStub blockingStub = getStub();
+        ManagedChannel channel = ManagedChannelBuilder.forAddress(reservationApiGrpcAddress, 9095)
+                .usePlaintext()
+                .build();
+        ReservationServiceGrpc.ReservationServiceBlockingStub blockingStub = ReservationServiceGrpc.newBlockingStub(channel);
         ListReservation reservations = blockingStub.findAll(EmptyMessage.newBuilder().build());
         List<Reservation> retVal = new ArrayList<>();
         for(communication.Reservation res : reservations.getReservationsList()){
             retVal.add(convertReservationGrpcToReservation(res));
         }
+        if (channel != null && !channel.isShutdown()) {
+            channel.shutdown();
+        }
         return retVal;
     }
 
     public List<Reservation> findAllByStatus(com.gateway.apigateway.model.ReservationStatus status) {
-        ReservationServiceGrpc.ReservationServiceBlockingStub blockingStub = getStub();
+        ManagedChannel channel = ManagedChannelBuilder.forAddress(reservationApiGrpcAddress, 9095)
+                .usePlaintext()
+                .build();
+        ReservationServiceGrpc.ReservationServiceBlockingStub blockingStub = ReservationServiceGrpc.newBlockingStub(channel);
         ListReservation reservations = blockingStub.findAllByStatus(Status.newBuilder().setStatus(convertReservationStatusToReservationStatusGrpc(status)).build());
         List<Reservation> retVal = new ArrayList<>();
         for(communication.Reservation res : reservations.getReservationsList()){
             retVal.add(convertReservationGrpcToReservation(res));
         }
+        if (channel != null && !channel.isShutdown()) {
+            channel.shutdown();
+        }
         return retVal;
     }
 
     public List<Reservation> findAllByUserId(Long id) {
-        ReservationServiceGrpc.ReservationServiceBlockingStub blockingStub = getStub();
+        ManagedChannel channel = ManagedChannelBuilder.forAddress(reservationApiGrpcAddress, 9095)
+                .usePlaintext()
+                .build();
+        ReservationServiceGrpc.ReservationServiceBlockingStub blockingStub = ReservationServiceGrpc.newBlockingStub(channel);
         ListReservation reservations = blockingStub.findAllByUserId(LongId.newBuilder().setId(id).build());
         List<Reservation> retVal = new ArrayList<>();
         for(communication.Reservation res : reservations.getReservationsList()){
             retVal.add(convertReservationGrpcToReservation(res));
         }
+        if (channel != null && !channel.isShutdown()) {
+            channel.shutdown();
+        }
         return retVal;
     }
 
     public List<Reservation> findAllByHostId(Long id) {
-        ReservationServiceGrpc.ReservationServiceBlockingStub blockingStub = getStub();
+        ManagedChannel channel = ManagedChannelBuilder.forAddress(reservationApiGrpcAddress, 9095)
+                .usePlaintext()
+                .build();
+        ReservationServiceGrpc.ReservationServiceBlockingStub blockingStub = ReservationServiceGrpc.newBlockingStub(channel);
         ListReservation reservations = blockingStub.findAllByHostId(LongId.newBuilder().setId(id).build());
         List<Reservation> retVal = new ArrayList<>();
         for(communication.Reservation res : reservations.getReservationsList()){
             retVal.add(convertReservationGrpcToReservation(res));
         }
+        if (channel != null && !channel.isShutdown()) {
+            channel.shutdown();
+        }
         return retVal;
     }
 
     public List<Reservation> findByAccomodationId(Long id) {
-        ReservationServiceGrpc.ReservationServiceBlockingStub blockingStub = getStub();
+        ManagedChannel channel = ManagedChannelBuilder.forAddress(reservationApiGrpcAddress, 9095)
+                .usePlaintext()
+                .build();
+        ReservationServiceGrpc.ReservationServiceBlockingStub blockingStub = ReservationServiceGrpc.newBlockingStub(channel);
         ListReservation reservations = blockingStub.findByAccomodationId(LongId.newBuilder().setId(id).build());
         List<Reservation> retVal = new ArrayList<>();
         for(communication.Reservation res : reservations.getReservationsList()){
             retVal.add(convertReservationGrpcToReservation(res));
+        }
+        if (channel != null && !channel.isShutdown()) {
+            channel.shutdown();
         }
         return retVal;
     }
