@@ -128,4 +128,15 @@ public class AccommodationService {
         }
         return AccommodationMapper.convertAccommodationGrpcToAccommodationWithGrade(acc);
     }
+
+    public List<Accommodation> recommend(long userId) {
+        ManagedChannel channel = ManagedChannelBuilder.forAddress(accommodationApiGrpcAddress, 9094)
+                .usePlaintext()
+                .build();
+        AccommodationServiceGrpc.AccommodationServiceBlockingStub blockingStub = AccommodationServiceGrpc.newBlockingStub(channel);
+        communication.UserId userIdRequest = communication.UserId.newBuilder().setUserId(userId).build();
+
+        communication.RecResponse response = blockingStub.recommend(userIdRequest);
+        return AccommodationMapper.convertRecResponseToAccommodationList(response);
+    }
 }

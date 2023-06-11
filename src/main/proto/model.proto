@@ -119,6 +119,10 @@ message AccommodationWithGrade {
   float avgGrade = 12;
 }
 
+message RecResponse {
+  repeated AccommodationWithGrade accommodations = 1;
+}
+
 message ListAccommodationRate{
   repeated AccommodationRate accommodationRates = 1;
 }
