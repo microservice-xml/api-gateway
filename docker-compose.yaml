@@ -3,6 +3,11 @@ services:
   gateway-api:
     build: .
     restart: always
+    container_name: gateway
+    volumes:
+      - type: volume
+        source: local-env_shared
+        target: /home
     ports:
      - 8082:8082
     environment:
@@ -13,3 +18,7 @@ services:
 networks:
   default:
     name: local-env_default
+
+volumes:
+  local-env_shared:
+    external: true
