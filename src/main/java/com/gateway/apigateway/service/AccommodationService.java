@@ -10,6 +10,8 @@ import communication.*;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import lombok.RequiredArgsConstructor;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
  import org.springframework.beans.factory.annotation.Autowired;
  import org.springframework.beans.factory.annotation.Value;
  import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,6 +31,8 @@ public class AccommodationService {
 
     @Value("${accommodation-api.grpc.address}")
     private String accommodationApiGrpcAddress;
+
+    Logger logger = LoggerFactory.getLogger(AccommodationService.class);
 
 //    @Autowired
 //    public AccommodationService(@Value("${accommodation.api.grpc.address}") String accommodationApiGrpcAddress) {
@@ -88,7 +92,7 @@ public class AccommodationService {
         ManagedChannel channel = ManagedChannelBuilder.forAddress(accommodationApiGrpcAddress, 9094)
                 .usePlaintext()
                 .build();
-
+        logger.info("Request for create new accommodation. [name: "+accommodation.getName()+"]");
         AccommodationServiceGrpc.AccommodationServiceBlockingStub blockingStub = AccommodationServiceGrpc.newBlockingStub(channel);
         AccommodationFull request = AccommodationMapper.convertAccommodationToAccommodationGrpc(accommodation);
 

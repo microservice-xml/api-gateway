@@ -8,6 +8,8 @@ import communication.*;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +32,7 @@ public class AuthenticationService implements UserDetailsService {
 //    private String userApiGrpcAddress;
 
     private final String userApiGrpcAddress = "user-api";
-
+    private Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
     @Override
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
         try {
@@ -67,7 +69,7 @@ public class AuthenticationService implements UserDetailsService {
         ManagedChannel channel = ManagedChannelBuilder.forAddress(userApiGrpcAddress, 9093)
                 .usePlaintext()
                 .build();
-
+        logger.info("Request for create new user. [name: "+user.getUsername()+"]");
         userDetailsServiceGrpc.userDetailsServiceBlockingStub blockingStub = userDetailsServiceGrpc.newBlockingStub(channel);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         RegisterUser request = UserMapper.convertToRegistrationRequest(user);
