@@ -13,6 +13,8 @@ import communication.rateServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
@@ -33,13 +35,13 @@ public class RateService {
 
     @Value("${user-api.grpc.address}")
     private String userApiGrpcAddress;
-
+    private Logger logger = LoggerFactory.getLogger(RateService.class);
     public String rateHost(Rate rate) {
         ManagedChannel channel = ManagedChannelBuilder.forAddress(userApiGrpcAddress, 9093)
                 .usePlaintext()
                 .build();
         rateServiceGrpc.rateServiceBlockingStub blockingStub = rateServiceGrpc.newBlockingStub(channel);
-
+        logger.info("Request for new rate host [ID: %d] by guest [ID: %d]",rate.getHostId(), rate.getGuestId());
         communication.Rate request = RateMapper.convertFromMessageToRate(rate);
 
         MessageResponse response = blockingStub.rateHost(request);
@@ -53,7 +55,7 @@ public class RateService {
                 .usePlaintext()
                 .build();
         rateServiceGrpc.rateServiceBlockingStub blockingStub = rateServiceGrpc.newBlockingStub(channel);
-
+        logger.info("Request for edit rate host [ID: %d] by guest [ID: %d]",rate.getHostId(), rate.getGuestId());
         communication.Rate r = RateMapper.convertFromMessageToRateWithId(rate);
         communication.Rate response = blockingStub.changeRate(r);
         if (channel != null && !channel.isShutdown()) {
@@ -67,7 +69,7 @@ public class RateService {
                 .usePlaintext()
                 .build();
         rateServiceGrpc.rateServiceBlockingStub blockingStub = rateServiceGrpc.newBlockingStub(channel);
-
+        logger.info("Request for remove rate. [ID %d]",id);
         communication.UserIdRequest request = communication.UserIdRequest.newBuilder()
                 .setId(id)
                 .build();
@@ -84,7 +86,7 @@ public class RateService {
                 .usePlaintext()
                 .build();
         rateServiceGrpc.rateServiceBlockingStub blockingStub = rateServiceGrpc.newBlockingStub(channel);
-
+        logger.info("Request for new rate accomodation by guest. [ID: %d]", rate.getGuestId());
         communication.AccommodationRate request = RateAccommodationMapper.convertFromMessageToRate(rate);
 
         MessageResponse response = blockingStub.rateAccommodation(request);
@@ -99,7 +101,7 @@ public class RateService {
                 .usePlaintext()
                 .build();
         rateServiceGrpc.rateServiceBlockingStub blockingStub = rateServiceGrpc.newBlockingStub(channel);
-
+        logger.info("Request for edit rate accomodation by guest. [ID: %d]", rate.getGuestId());
         communication.AccommodationRate r = convertFromMessageToRateWithId(rate);
         communication.AccommodationRate response = blockingStub.changeAccommodationRate(r);
         if (channel != null && !channel.isShutdown()) {
@@ -113,7 +115,7 @@ public class RateService {
                 .usePlaintext()
                 .build();
         rateServiceGrpc.rateServiceBlockingStub blockingStub = rateServiceGrpc.newBlockingStub(channel);
-
+        logger.info("Request for remove rate accomodation. [ID: %d]", id);
         communication.UserIdRequest request = communication.UserIdRequest.newBuilder()
                 .setId(id)
                 .build();

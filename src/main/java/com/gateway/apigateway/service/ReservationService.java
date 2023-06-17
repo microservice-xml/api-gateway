@@ -6,6 +6,8 @@ import communication.*;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +23,7 @@ import static com.gateway.apigateway.mapper.ReservationStatusMapper.convertReser
 @RequiredArgsConstructor
 public class ReservationService {
     private final AvailabilitySlotService availabilitySlotService;
-
+    private Logger logger = LoggerFactory.getLogger(ReservationService.class);
     @Value("${reservation-api.grpc.address}")
     private String reservationApiGrpcAddress;
 
@@ -37,7 +39,7 @@ public class ReservationService {
                 .usePlaintext()
                 .build();
         ReservationServiceGrpc.ReservationServiceBlockingStub blockingStub = ReservationServiceGrpc.newBlockingStub(channel);
-
+        logger.info("Request for create new reservation request by guest [ID: %d]",reservationDto.getUserId());
         Reservation reservation = findAvailabilitySlotForReservation(reservationDto);
         MessageResponse response = blockingStub.createRequest(convertReservationToReservationGrpc(reservation));
         if (channel != null && !channel.isShutdown()) {
@@ -84,6 +86,7 @@ public class ReservationService {
                 .usePlaintext()
                 .build();
         ReservationServiceGrpc.ReservationServiceBlockingStub blockingStub = ReservationServiceGrpc.newBlockingStub(channel);
+        logger.info("Request for create new reservation by guest. [ID: %d]",reservationDto.getUserId());
         Reservation reservation = findAvailabilitySlotForReservation(reservationDto);
         MessageResponse response = blockingStub.acceptReservationAuto(convertReservationToReservationGrpc(reservation));
         if (channel != null && !channel.isShutdown()) {
@@ -96,6 +99,8 @@ public class ReservationService {
         ManagedChannel channel = ManagedChannelBuilder.forAddress(reservationApiGrpcAddress, 9095)
                 .usePlaintext()
                 .build();
+
+        logger.info("Request for remove reservation. [ID: %s]",id);
         ReservationServiceGrpc.ReservationServiceBlockingStub blockingStub = ReservationServiceGrpc.newBlockingStub(channel);
         MessageResponse response = blockingStub.cancel(Id.newBuilder().setId(id).build());
         if (channel != null && !channel.isShutdown()) {
@@ -109,6 +114,7 @@ public class ReservationService {
                 .usePlaintext()
                 .build();
         ReservationServiceGrpc.ReservationServiceBlockingStub blockingStub = ReservationServiceGrpc.newBlockingStub(channel);
+        logger.info("Request for reject reservation request. [ID: %s]",id);
         MessageResponse response = blockingStub.rejectRequest(Id.newBuilder().setId(id).build());
         if (channel != null && !channel.isShutdown()) {
             channel.shutdown();
@@ -121,6 +127,7 @@ public class ReservationService {
                 .usePlaintext()
                 .build();
         ReservationServiceGrpc.ReservationServiceBlockingStub blockingStub = ReservationServiceGrpc.newBlockingStub(channel);
+        logger.info("Request for accpet reservation request. [ID: %s]",id);
         MessageResponse response = blockingStub.acceptReservationManual(Id.newBuilder().setId(id).build());
         if (channel != null && !channel.isShutdown()) {
             channel.shutdown();

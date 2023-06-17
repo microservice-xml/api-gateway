@@ -9,6 +9,8 @@ import com.gateway.apigateway.mapper.UserMapper;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -29,6 +31,7 @@ public class UserService {
 
 //    @Value("${user-api.grpc.address}")
     private final String userApiGrpcAddress;
+    private Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
     public UserService(@Value("${user-api.grpc.address}") String userApiGrpcAddress, PasswordEncoder passwordEncoder) {
@@ -50,6 +53,7 @@ public class UserService {
         if(user.getPassword()!=null) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
+        logger.info("Request for edit user. [ID: "+user.getId()+"]");
         communication.User u = convertUserToUserGrpc(user);
         communication.User response = blockingStub.changeUserInfo(u);
         if (channel != null && !channel.isShutdown()) {
@@ -75,6 +79,7 @@ public class UserService {
                 .usePlaintext()
                 .build();
         userDetailsServiceGrpc.userDetailsServiceBlockingStub blockingStub = userDetailsServiceGrpc.newBlockingStub(channel);
+        logger.info("Request for remove user. [ID: "+id+"]");
         communication.MessageResponse message = blockingStub.delete(communication.UserIdRequest.newBuilder().setId(id).build());
         if (channel != null && !channel.isShutdown()) {
             channel.shutdown();
