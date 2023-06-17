@@ -8,6 +8,9 @@ import communication.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 public class AccommodationMapper {
@@ -62,6 +65,17 @@ public class AccommodationMapper {
                 .build();
     }
 
+    public static List<Accommodation> convertRecResponseToAccommodationList(communication.RecResponse res) {
+
+        List<Accommodation> accommodations = new ArrayList<>();
+
+        for(communication.AccommodationWithGrade a : res.getAccommodationsList()) {
+            accommodations.add(convertAccommodationGrpcToAccommodationWithGrade(a));
+        }
+
+        return accommodations;
+    }
+
     public static AccommodationFull convertAccommodationToAccommodationGrpc(Accommodation accommodation) {
         AccommodationFull request = AccommodationFull.newBuilder()
                 .setLocation(accommodation.getLocation())
@@ -71,7 +85,6 @@ public class AccommodationMapper {
                 .setMaxGuests(accommodation.getMaxGuests())
                 .setMinGuests(accommodation.getMinGuests())
                 .setAvailableBeds(accommodation.getAvailableBeds())
-                .setAccommodationGradeId(accommodation.getAccommodationGradeId())
                 .setIsAuto((accommodation.isAuto()))
                 .setUserId(accommodation.getUserId())
                 .build();

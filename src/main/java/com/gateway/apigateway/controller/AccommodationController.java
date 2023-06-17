@@ -6,6 +6,7 @@ import com.gateway.apigateway.model.Accommodation;
 import com.gateway.apigateway.model.User;
 import com.gateway.apigateway.service.AccommodationService;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.validator.constraints.ParameterScriptAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,6 +50,11 @@ public class AccommodationController {
     @GetMapping("/{id}")
     public ResponseEntity findById(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(accommodationService.findById(id));
+    }
+
+    @GetMapping("/recommend/{id}")
+    public ResponseEntity recommend(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(accommodationService.recommend(id));
     }
 
 }
