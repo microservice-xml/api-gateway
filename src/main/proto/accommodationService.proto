@@ -12,10 +12,30 @@ service AccommodationService {
   rpc findAll(Empty) returns (ListAccommodation);
   rpc findById(UserIdRequest) returns (AccommodationWithGrade);
   rpc recommend(UserId) returns (RecResponse);
+  rpc checkForDelete(CheckDeleteRequest) returns (BooleanResponse);
+}
+
+service UserAccommodationService {
+  rpc checkForDelete(UserIdRequest) returns (AccommodationResponse);
+}
+
+message AccommodationResponse {
+  repeated int64 accommodationIds = 1;
+}
+
+message CheckDeleteRequest {
+  repeated int64 accommodationIds = 1;
+  int32 startYear = 2;
+  int32 startMonth = 3;
+  int32 startDay = 4;
 }
 
 message UserId {
   int64 userId = 1;
+}
+
+message BooleanResponse {
+  bool available = 1;
 }
 
 message Empty {}

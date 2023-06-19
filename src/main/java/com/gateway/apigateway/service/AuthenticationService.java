@@ -46,7 +46,7 @@ public class AuthenticationService implements UserDetailsService {
     private User getUserDetails(String username){
 
         System.out.println(userApiGrpcAddress);
-        ManagedChannel channel = ManagedChannelBuilder.forAddress(userApiGrpcAddress, 9093)
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 9093)
                 .usePlaintext()
                 .build();
 
@@ -66,7 +66,7 @@ public class AuthenticationService implements UserDetailsService {
     }
 
     public String register(User user) {
-        ManagedChannel channel = ManagedChannelBuilder.forAddress(userApiGrpcAddress, 9093)
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 9093)
                 .usePlaintext()
                 .build();
         logger.info("Request for create new user. [name: "+user.getUsername()+"]");

@@ -2,6 +2,7 @@ package com.gateway.apigateway.controller;
 
 import com.gateway.apigateway.dto.User.UserDto;
 import com.gateway.apigateway.model.User;
+import com.gateway.apigateway.service.OrchestratorService;
 import com.gateway.apigateway.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -23,6 +24,8 @@ import static org.springframework.http.HttpStatus.OK;
 public class UserController {
     @Autowired
     UserService userService;
+
+    private final OrchestratorService orchestratorService;
     private Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @GetMapping("/all")
@@ -45,7 +48,7 @@ public class UserController {
     @DeleteMapping("/remove/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id){
         logger.trace("Request to delete the user with id {} was made", id);
-        return ResponseEntity.ok(userService.deleteUser(id));
+        return ResponseEntity.ok(orchestratorService.deleteUser(id));
     }
     /*
     @GetMapping("/user-details/{username}")
