@@ -121,6 +121,7 @@ public class UserMapper {
                 .role(convertToEntityRole(user.getRole()))
                 .username(user.getUsername())
                 .avgGrade(user.getAvgGrade())
+                .isHighlighted(user.getIsHighlighted())
                 .build();
     }
 

@@ -26,4 +26,5 @@ public class UserDto {
     private String password;
     private Role role;
     private float avgGrade;
+    private boolean isHighlighted;
 }
